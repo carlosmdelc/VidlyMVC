@@ -10,6 +10,18 @@ namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
+        private ApplicationDbContext _context;
+
+        public MoviesController()
+        {
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
+
         // GET: Movies
         public ActionResult Index()
         {
@@ -44,6 +56,17 @@ namespace Vidly.Controllers
             // return HttpNotFound();
             // return new EmptyResult();
             // return RedirectToAction("index", "Home", new { page = 1, sortBy = "name" });
+        }
+
+        public ActionResult Details(int id)
+        {
+            var movie = new Movie
+            {
+                Id = 1,
+                Name = "Carlos Movie"
+            };
+
+            return View(movie);
         }
 
         [Route("movies/released/{year}/{month:regex(\\d{2}):range(1, 12)}")]
