@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Vidly.Models;
 using Vidly.ViewModels;
+using System.Data.Entity;
 
 namespace Vidly.Controllers
 {
@@ -60,11 +61,10 @@ namespace Vidly.Controllers
 
         public ActionResult Details(int id)
         {
-            var movie = new Movie
-            {
-                Id = 1,
-                Name = "Carlos Movie"
-            };
+            var movie = _context.Movies.Include(m => m.Genre).SingleOrDefault(m => m.Id == id);
+
+            if (movie == null)
+                return HttpNotFound();
 
             return View(movie);
         }
@@ -77,15 +77,19 @@ namespace Vidly.Controllers
 
         private IEnumerable<Movie> GetMovies()
         {
-            return new List<Movie>
-            {
-                new Movie {Id = 1, Name = "Shrek"},
-                new Movie {Id = 1, Name = "Top Gun"},
-                new Movie {Id = 1, Name = "Spiderman"},
-                new Movie {Id = 1, Name = "Avengers"},
-                new Movie {Id = 1, Name = "Toy Story"},
-                new Movie {Id = 1, Name = "Unknown Movie"},
-            };
+            var movies = _context.Movies.Include(m => m.Genre).ToList();
+
+            return movies;
+
+            //return new List<Movie>
+            //{
+            //    new Movie {Id = 1, Name = "Shrek"},
+            //    new Movie {Id = 2, Name = "Top Gun"},
+            //    new Movie {Id = 3, Name = "Spiderman"},
+            //    new Movie {Id = 4, Name = "Avengers"},
+            //    new Movie {Id = 5, Name = "Toy Story"},
+            //    new Movie {Id = 6, Name = "Unknown Movie"},
+            //};
         }
     }
 }
